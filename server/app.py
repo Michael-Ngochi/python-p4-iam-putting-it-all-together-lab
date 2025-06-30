@@ -77,16 +77,15 @@ class Logout(Resource):
         return {"error": "Unauthorized"}, 401
 
 class RecipeIndex(Resource):
-   def get(self):
+    def get(self):
         user_id = session.get('user_id')
         if not user_id:
             return {"error": "Unauthorized"}, 401
 
         recipes = Recipe.query.all()
         return [recipe.to_dict() for recipe in recipes], 200
-    
-    
-   def post(self):
+
+    def post(self):
         user_id = session.get('user_id')
         if not user_id:
             return {"error": "Unauthorized"}, 401
@@ -107,8 +106,8 @@ class RecipeIndex(Resource):
 
         except Exception as e:
             return {"errors": [str(e)]}, 422
- 
 
+# Register resources
 api.add_resource(Signup, '/signup', endpoint='signup')
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')
 api.add_resource(Login, '/login', endpoint='login')
@@ -117,4 +116,6 @@ api.add_resource(RecipeIndex, '/recipes', endpoint='recipes')
 
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(port=5555, debug=True)
